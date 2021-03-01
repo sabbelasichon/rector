@@ -164,16 +164,8 @@ CODE_SAMPLE
      */
     private function filterOutUniqueNames(array $assigns): array
     {
-        $assignsByName = [];
-        foreach ($assigns as $assign) {
-            /** @var string $variableName */
-            $variableName = $this->getName($assign->var);
-
-            $assignsByName[$variableName][] = $assign;
-        }
-
+        $assignsByName = $this->collectAssignsByName($assigns);
         $assignsWithUniqueName = [];
-        /** @var Assign[] $singleAssignsByName */
         foreach ($assignsByName as $singleAssignsByName) {
             $count = count($singleAssignsByName);
             if ($count > 1) {
@@ -184,6 +176,23 @@ CODE_SAMPLE
         }
 
         return $assignsWithUniqueName;
+    }
+
+    /**
+     * @param Assign[] $assigns
+     * @return array<string, Assign[]>
+     */
+    private function collectAssignsByName(array $assigns): array
+    {
+        $assignsByName = [];
+        foreach ($assigns as $assign) {
+            /** @var string $variableName */
+            $variableName = $this->getName($assign->var);
+
+            $assignsByName[$variableName][] = $assign;
+        }
+
+        return $assignsByName;
     }
 
     /**
